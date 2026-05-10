@@ -1,0 +1,63 @@
+# Generic
+.DS_Store
+.env
+.env.local
+*.log
+.idea/
+.vscode/
+.direnv/
+
+[% if 'python' in languages %]
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+[% endif %]
+
+[% if 'typescript' in languages %]
+# TypeScript / Node
+node_modules/
+.next/
+.turbo/
+.pnpm-store/
+*.tsbuildinfo
+[% endif %]
+
+[% if 'go' in languages %]
+# Go
+/bin/
+/vendor/
+*.test
+*.out
+[% endif %]
+
+[% if 'rust' in languages %]
+# Rust
+/target/
+[% endif %]
+
+[% if 'java' in languages %]
+# Java
+target/
+.gradle/
+build/
+*.class
+[% endif %]
+
+# Claude Code
+.claude/local/
+.claude/cache/
+.claude/state/
+
+# Secrets
+secrets/
+*.pem
+*.key

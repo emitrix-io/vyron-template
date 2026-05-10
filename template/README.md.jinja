@@ -1,0 +1,30 @@
+# [[ project_name ]]
+
+[[ project_description ]]
+
+## Author
+[[ author_name ]] <[[ author_email ]]>
+
+## License
+[[ license ]]
+
+## Quick start
+
+```bash
+make install
+make verify
+```
+
+## Claude Code AI assistance
+
+In Claude Code:
+/plugin marketplace add https://github.com/[[ claude_plugin_repo ]]
+/plugin install dev-platform@dev-platform
+
+After install, copy rules:
+```bash
+mkdir -p ~/.claude/rules/dev-platform
+cp -R rules/* ~/.claude/rules/dev-platform/
+```
+
+See `CLAUDE.md` for operating rules and `docs/decisions/` for ADRs.

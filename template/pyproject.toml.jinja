@@ -1,0 +1,31 @@
+[% if 'python' in languages %][project]
+name = "[[ project_slug ]]"
+version = "0.1.0"
+description = "[[ project_description ]]"
+requires-python = ">=3.12"
+
+[tool.uv.workspace]
+members = ["apps/python/*", "libs/python/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "UP", "B", "C4", "SIM", "S", "ANN", "PL", "RUF"]
+ignore = ["S101", "ANN101", "ANN102", "PLR0913"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "ANN", "PLR2004"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["apps/python", "libs/python", "tests"]
+addopts = "--cov --cov-report=term-missing --cov-fail-under=80"
+
+[dependency-groups]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.6", "mypy>=1.11", "detect-secrets>=1.5", "pre-commit>=3.8"]
+[% endif %]

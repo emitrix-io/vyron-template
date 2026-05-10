@@ -1,0 +1,47 @@
+.PHONY: help install verify lint type test security precommit clean
+
+help:
+	@echo "Targets: install, verify, lint, type, test, security, precommit, clean"
+
+install:[% if 'python' in languages %]
+	uv sync --all-packages[% endif %][% if 'typescript' in languages %]
+	pnpm install[% endif %][% if 'go' in languages %]
+	go mod download[% endif %][% if 'rust' in languages %]
+	cargo fetch[% endif %][% if 'java' in languages %]
+	mvn -B dependency:resolve[% endif %]
+
+lint:[% if 'python' in languages %]
+	uv run ruff check . && uv run ruff format --check .[% endif %][% if 'typescript' in languages %]
+	pnpm run lint[% endif %][% if 'go' in languages %]
+	golangci-lint run ./...[% endif %][% if 'rust' in languages %]
+	cargo clippy --all-targets --all-features -- -D warnings[% endif %][% if 'java' in languages %]
+	mvn -B spotbugs:check checkstyle:check[% endif %]
+
+type:[% if 'python' in languages %]
+	uv run mypy .[% endif %][% if 'typescript' in languages %]
+	pnpm run typecheck[% endif %]
+
+test:[% if 'python' in languages %]
+	uv run pytest[% endif %][% if 'typescript' in languages %]
+	pnpm test[% endif %][% if 'go' in languages %]
+	go test -race -cover ./...[% endif %][% if 'rust' in languages %]
+	cargo test --all-features[% endif %][% if 'java' in languages %]
+	mvn -B test[% endif %]
+
+security:
+	npx -y ecc-agentshield scan[% if 'python' in languages %]
+	uv run detect-secrets scan --baseline .secrets.baseline[% endif %][% if 'go' in languages %]
+	gosec ./... 2>/dev/null || true[% endif %][% if 'rust' in languages %]
+	cargo audit 2>/dev/null || true[% endif %][% if 'typescript' in languages %]
+	pnpm audit --prod || true[% endif %]
+
+precommit:
+	pre-commit run --all-files
+
+verify: lint type test security
+	@echo "✓ All checks passed."
+
+clean:
+	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+	find . -type d -name node_modules -exec rm -rf {} + 2>/dev/null || true
+	rm -rf .pytest_cache .mypy_cache .ruff_cache htmlcov .coverage target build

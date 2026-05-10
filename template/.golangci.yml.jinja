@@ -1,0 +1,15 @@
+[% if 'go' in languages %]run:
+  timeout: 5m
+linters:
+  enable:
+    - errcheck
+    - gosec
+    - govet
+    - ineffassign
+    - staticcheck
+    - unused
+    - revive
+    - gocyclo
+    - bodyclose
+    - sqlclosecheck
+[% endif %]
