@@ -1,0 +1,65 @@
+_subdirectory: template
+_min_copier_version: "9.0"
+
+project_name:
+  type: str
+  help: Project name (kebab-case)
+  validator: "{% if not (project_name | regex_search('^[a-z][a-z0-9-]+$')) %}Use kebab-case lowercase{% endif %}"
+
+project_slug:
+  type: str
+  default: "{{ project_name | replace('-', '_') }}"
+  when: false
+
+project_description:
+  type: str
+  help: One-line description
+
+author_name:
+  type: str
+  help: Author or organization name
+
+author_email:
+  type: str
+  help: Contact email
+
+license:
+  type: str
+  default: MIT
+  choices: [MIT, Apache-2.0, BSD-3-Clause, Proprietary]
+
+languages:
+  type: str
+  multiselect: true
+  default: [python]
+  choices:
+    Python: python
+    TypeScript: typescript
+    Go: go
+    Rust: rust
+    Java/Kotlin: java
+  help: Which language stacks to scaffold
+
+include_devcontainer:
+  type: bool
+  default: true
+
+include_release_workflow:
+  type: bool
+  default: true
+
+claude_plugin_repo:
+  type: str
+  default: "emitrix-io/vyron-plugin"
+
+_tasks:
+  - command: "git init -b main"
+    when: "{{ _copier_phase == 'final' }}"
+  - "echo '✓ Project scaffolded.'"
+  - "echo 'Next: cd {{ project_name }} && make install && make verify'"
+
+_exclude:
+  - "*.pyc"
+  - "__pycache__"
+  - ".git"
+  - "node_modules"

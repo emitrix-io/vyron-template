@@ -1,4 +1,4 @@
-*                       @[[ author_name | replace(' ', '') ]]
-/SECURITY.md            @[[ author_name | replace(' ', '') ]]
-/.github/workflows/     @[[ author_name | replace(' ', '') ]]
-/docs/decisions/        @[[ author_name | replace(' ', '') ]]
+*                       @{{ author_name | replace(' ', '') }}
+/SECURITY.md            @{{ author_name | replace(' ', '') }}
+/.github/workflows/     @{{ author_name | replace(' ', '') }}
+/docs/decisions/        @{{ author_name | replace(' ', '') }}

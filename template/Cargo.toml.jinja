@@ -1,4 +1,4 @@
-[% if 'rust' in languages %][workspace]
+{% if 'rust' in languages %}[workspace]
 resolver = "2"
 members = ["apps/rust/*", "libs/rust/*"]
 
@@ -9,4 +9,4 @@ unwrap_used = "warn"
 
 [workspace.lints.rust]
 unsafe_code = "forbid"
-[% endif %]
+{% endif %}

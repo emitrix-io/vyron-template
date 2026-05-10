@@ -1,42 +1,27 @@
-# [[ project_name ]] — Claude Operating Rules
+# {{ project_name }} — Claude Operating Rules
 
 ## Stack
-[% if 'python' in languages %]- Python 3.12 (uv, ruff, mypy --strict, pytest)
-[% endif %][% if 'typescript' in languages %]- TypeScript / Node 20+ (pnpm, biome, vitest)
-[% endif %][% if 'go' in languages %]- Go 1.22+ (golangci-lint, gosec, go test -race)
-[% endif %][% if 'rust' in languages %]- Rust stable (clippy -D warnings, cargo audit, cargo test)
-[% endif %][% if 'java' in languages %]- Java 21 / Kotlin (Maven, spotbugs, checkstyle, junit5)
-[% endif %]
+{% if 'python' in languages %}- Python 3.12 (uv, ruff, mypy --strict, pytest)
+{% endif %}{% if 'typescript' in languages %}- TypeScript / Node 20+ (pnpm, biome, vitest)
+{% endif %}{% if 'go' in languages %}- Go 1.22+ (golangci-lint, gosec, go test -race)
+{% endif %}{% if 'rust' in languages %}- Rust stable (clippy -D warnings, cargo audit, cargo test)
+{% endif %}{% if 'java' in languages %}- Java 21 / Kotlin (Maven, spotbugs, checkstyle, junit5)
+{% endif %}
 ## Architecture invariants
 1. Each `apps/*` is independently deployable. No shared databases.
 2. Inter-service: events for state changes, gRPC/REST for queries.
 3. Shared contracts in `libs/*`. Never duplicate schemas.
-4. Pure libraries (no I/O) preferred for business logic.
-5. Read `docs/decisions/*.md` at session start. Never contradict an Accepted ADR.
+4. Read `docs/decisions/*.md` at session start. Never contradict an Accepted ADR.
 
 ## Non-negotiable rules
 1. Tests required: unit (80%+), integration where service boundaries exist, contract tests on every public API.
 2. Strict typing in every language.
 3. No secrets in code. No PII in logs. JSON structured logs only.
-4. No `console.log`/`print`/`fmt.Println` in committed code.
-5. Database changes go through migrations only.
-6. Every dependency added must be justified in the PR description.
+4. Database changes go through migrations only.
+5. Every dependency added must be justified in the PR description.
 
 ## Workflow
 - New feature → design in `docs/architecture/` → ADR if architectural → tests → implement → `make verify` → PR.
-- Use `tdd-workflow` skill for new modules.
-- Use `verification-loop` skill before declaring work complete.
-- Use `security-review` skill for anything touching authn/authz/external input.
 
 ## Verification gate
-`make verify` must pass before commit and in CI:
-- Lint, type check, test with coverage, AgentShield, detect-secrets
-
-## Memory and continuity
-- Architectural decisions in `docs/decisions/` (ADRs) are durable; override session memory.
-- Operational procedures in `docs/runbooks/`.
-
-## What not to do
-- Do not weaken the verification gate to make a PR pass.
-- Do not introduce a new service-to-service pattern without an ADR.
-- Do not skip the type checker.
+`make verify` must pass before commit and in CI.

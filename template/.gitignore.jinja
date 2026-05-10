@@ -1,15 +1,11 @@
-# Generic
 .DS_Store
 .env
 .env.local
 *.log
 .idea/
 .vscode/
-.direnv/
 
-[% if 'python' in languages %]
-# Python
-__pycache__/
+{% if 'python' in languages %}__pycache__/
 *.py[cod]
 .venv/
 .pytest_cache/
@@ -20,44 +16,24 @@ htmlcov/
 dist/
 build/
 *.egg-info/
-[% endif %]
-
-[% if 'typescript' in languages %]
-# TypeScript / Node
-node_modules/
+{% endif %}{% if 'typescript' in languages %}node_modules/
 .next/
 .turbo/
-.pnpm-store/
 *.tsbuildinfo
-[% endif %]
-
-[% if 'go' in languages %]
-# Go
-/bin/
+{% endif %}{% if 'go' in languages %}/bin/
 /vendor/
 *.test
 *.out
-[% endif %]
-
-[% if 'rust' in languages %]
-# Rust
-/target/
-[% endif %]
-
-[% if 'java' in languages %]
-# Java
-target/
+{% endif %}{% if 'rust' in languages %}/target/
+{% endif %}{% if 'java' in languages %}target/
 .gradle/
 build/
 *.class
-[% endif %]
-
-# Claude Code
+{% endif %}
 .claude/local/
 .claude/cache/
 .claude/state/
 
-# Secrets
 secrets/
 *.pem
 *.key

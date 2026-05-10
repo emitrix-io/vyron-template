@@ -10,7 +10,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-[% if 'python' in languages %]  python:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      python: ${{ steps.check.outputs.python }}
+      typescript: ${{ steps.check.outputs.typescript }}
+      go: ${{ steps.check.outputs.go }}
+      rust: ${{ steps.check.outputs.rust }}
+      java: ${{ steps.check.outputs.java }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: check
+        shell: bash
+        run: |
+          echo "python=$([ -f pyproject.toml ] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "typescript=$([ -f package.json ] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "go=$([ -f go.work ] || [ -f go.mod ] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "rust=$([ -f Cargo.toml ] && echo true || echo false)" >> $GITHUB_OUTPUT
+          echo "java=$([ -f pom.xml ] && echo true || echo false)" >> $GITHUB_OUTPUT
+
+  python:
+    needs: detect
+    if: needs.detect.outputs.python == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -19,7 +40,10 @@ jobs:
       - run: uv run ruff check . && uv run ruff format --check .
       - run: uv run mypy .
       - run: uv run pytest
-[% endif %][% if 'typescript' in languages %]  typescript:
+
+  typescript:
+    needs: detect
+    if: needs.detect.outputs.typescript == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,7 +55,10 @@ jobs:
       - run: pnpm run lint
       - run: pnpm run typecheck
       - run: pnpm test
-[% endif %][% if 'go' in languages %]  go:
+
+  go:
+    needs: detect
+    if: needs.detect.outputs.go == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,7 +66,10 @@ jobs:
         with: { go-version: '1.22' }
       - uses: golangci/golangci-lint-action@v6
       - run: go test -race -cover ./...
-[% endif %][% if 'rust' in languages %]  rust:
+
+  rust:
+    needs: detect
+    if: needs.detect.outputs.rust == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -48,14 +78,17 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: cargo test --all-features
-[% endif %][% if 'java' in languages %]  java:
+
+  java:
+    needs: detect
+    if: needs.detect.outputs.java == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: '21', cache: maven }
       - run: mvn -B verify
-[% endif %]
+
   security:
     runs-on: ubuntu-latest
     permissions:

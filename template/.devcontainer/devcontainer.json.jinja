@@ -1,23 +1,15 @@
-[% if include_devcontainer %]{
-  "name": "[[ project_name ]]",
+{% if include_devcontainer %}{
+  "name": "{{ project_name }}",
   "image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
   "features": {
-[% if 'python' in languages %]    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
-    "ghcr.io/va-h/devcontainers-features/uv:1": {},
-[% endif %][% if 'typescript' in languages %]    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
-[% endif %][% if 'go' in languages %]    "ghcr.io/devcontainers/features/go:1": { "version": "1.22" },
-[% endif %][% if 'rust' in languages %]    "ghcr.io/devcontainers/features/rust:1": {},
-[% endif %][% if 'java' in languages %]    "ghcr.io/devcontainers/features/java:1": { "version": "21" },
-[% endif %]    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+{% if 'python' in languages %}    "ghcr.io/devcontainers/features/python:1": { "version": "3.12" },
+{% endif %}{% if 'typescript' in languages %}    "ghcr.io/devcontainers/features/node:1": { "version": "20" },
+{% endif %}{% if 'go' in languages %}    "ghcr.io/devcontainers/features/go:1": { "version": "1.22" },
+{% endif %}{% if 'rust' in languages %}    "ghcr.io/devcontainers/features/rust:1": {},
+{% endif %}{% if 'java' in languages %}    "ghcr.io/devcontainers/features/java:1": { "version": "21" },
+{% endif %}    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
     "ghcr.io/devcontainers/features/github-cli:1": {}
   },
-  "postCreateCommand": "npm install -g @anthropic-ai/claude-code && pip install --user pre-commit detect-secrets && pre-commit install && make install",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "anthropic.claude-code"[% if 'python' in languages %], "ms-python.python", "charliermarsh.ruff"[% endif %][% if 'typescript' in languages %], "biomejs.biome"[% endif %][% if 'go' in languages %], "golang.go"[% endif %][% if 'rust' in languages %], "rust-lang.rust-analyzer"[% endif %]
-      ]
-    }
-  }
+  "postCreateCommand": "npm install -g @anthropic-ai/claude-code && pip install --user pre-commit detect-secrets && pre-commit install && make install"
 }
-[% endif %]
+{% endif %}

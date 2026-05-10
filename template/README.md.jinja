@@ -1,12 +1,12 @@
-# [[ project_name ]]
+# {{ project_name }}
 
-[[ project_description ]]
+{{ project_description }}
 
 ## Author
-[[ author_name ]] <[[ author_email ]]>
+{{ author_name }} <{{ author_email }}>
 
 ## License
-[[ license ]]
+{{ license }}
 
 ## Quick start
 
@@ -18,7 +18,7 @@ make verify
 ## Claude Code AI assistance
 
 In Claude Code:
-/plugin marketplace add https://github.com/[[ claude_plugin_repo ]]
+/plugin marketplace add https://github.com/{{ claude_plugin_repo }}
 /plugin install dev-platform@dev-platform
 
 After install, copy rules:
@@ -26,5 +26,3 @@ After install, copy rules:
 mkdir -p ~/.claude/rules/dev-platform
 cp -R rules/* ~/.claude/rules/dev-platform/
 ```
-
-See `CLAUDE.md` for operating rules and `docs/decisions/` for ADRs.
