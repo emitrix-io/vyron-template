@@ -125,3 +125,39 @@ jobs:
         uses: actions/dependency-review-action@v4
         with:
           fail-on-severity: high
+
+  compliance:
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify SoA exists and is recent
+        run: |
+          test -f docs/compliance/soa/iso27001-2022.md
+          # Fail if not modified in last 365 days
+          age_days=$(( ($(date +%s) - $(git log -1 --format=%ct docs/compliance/soa/iso27001-2022.md)) / 86400 ))
+          if [ "$age_days" -gt 365 ]; then
+            echo "ERROR: SoA not reviewed in $age_days days (>365)"
+            exit 1
+          fi
+
+      - name: Verify policies exist
+        run: |
+          for policy in information-security-policy access-control-policy incident-response-policy vulnerability-management-policy; do
+            test -f "docs/compliance/policies/${policy}.md" || { echo "Missing $policy"; exit 1; }
+          done
+
+      - name: Verify ADRs reference controls
+        run: |
+          missing=$(grep -rL "Controls" docs/decisions/ | wc -l | tr -d ' ')
+          if [ "$missing" -gt 0 ]; then
+            echo "WARNING: $missing ADRs missing Controls section"
+            grep -rL "Controls" docs/decisions/
+          fi
+
+      - name: License scan
+        uses: fossas/fossa-action@main
+        continue-on-error: true
+        with:
+          api-key: ${{ secrets.FOSSA_API_KEY }}
